@@ -46,7 +46,7 @@ jobs:
         run: Get-ChildItem -Recurse -Path .
         shell: pwsh          
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         name: Install Python
         with:
           python-version: 3.12
@@ -70,7 +70,7 @@ jobs:
         shell: bash
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Syng Version ${{ env.VERSION }}
           path: dist/syng-${{ env.VERSION }}.exe          
