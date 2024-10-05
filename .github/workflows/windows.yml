@@ -50,16 +50,27 @@ jobs:
         name: Install Python
         with:
           python-version: 3.12
+          
+      - name: Install poetry
+        run: pip install poetry
 
       - name: Install PyInstaller
         run: pip install pyinstaller
 
       - name: Bundle Syng
-        run: pyinstaller -F -w -i'resources\icons\syng.ico' --add-data='resources\icons\syng.ico;.' --add-binary '.\mpv.exe;.' --add-binary '.\vulkan-1.dll;.' --add-binary '.\ffmpeg.exe;.' syng/main.py
-        
-      - name: List all files
-        run: Get-ChildItem -Recurse -Path .
-        shell: pwsh
-      
+        run: pyinstaller -F -w -i'resources\icons\syng.ico' --add-data='resources\icons\syng.ico;.' --add-binary '.\mpv.exe;.' --add-binary '.\vulkan-1.dll;.' --add-binary '.\ffmpeg.exe;.' syng/main.py      
+            
+      - name: Extract version from Poetry
+        id: get_version
+        run: echo "VERSION=$(poetry version -s)" >> $GITHUB_ENV
+        shell: bash
 
-      
+      - name: Rename the generated file
+        run: mv dist/main.exe "dist/syng-${{ env.VERSION }}.exe"
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Syng Version ${{ env.VERSION }}
+          path: dist/syng-${{ env.VERSION }}.exe          
