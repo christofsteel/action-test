@@ -46,12 +46,11 @@ jobs:
 
       - name: Populate workdir
         run: |
-          cp -rv syng work/syng
-          cp requirements-client.txt work/requirements.txt
-          cp resources/icons/syng.ico work/
-          cp mpv.exe work/
-          cp vulkan-1.dll work/
-          cp ffmpeg-7.1-full_build/bin/ffmpeg.exe work/
+          Copy-Item -Verbose requirements-client.txt work/requirements.txt
+          Copy-Item -Verbose resources/icons/syng.ico work/
+          Copy-Item -Verbose mpv.exe work/
+          Copy-Item -Verbose vulkan-1.dll work/
+          Copy-Item -Verbose ffmpeg-7.1-full_build/bin/ffmpeg.exe work/
           
 
       - name: List all files
