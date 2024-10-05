@@ -42,6 +42,10 @@ jobs:
           7z x ffmpeg-release-full.7z
           mv ffmpeg-7.1-full_build/bin/ffmpeg.exe .
 
+      - name: List all files
+        run: Get-ChildItem -Recurse -Path .
+        shell: pwsh          
+
       - uses: actions/setup-python@v2
         name: Install Python
         with:
