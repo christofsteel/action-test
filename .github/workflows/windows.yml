@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Build under windows
 
 # Controls when the workflow will run
 on:
@@ -24,17 +24,16 @@ jobs:
     steps:
      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Cache MPV download
-        uses: actions/cache@v3
-        with:
-          path: mpv-x86_64-windows-msvc.zip
-          key: ${{ runner.os }}-mpv-${{ hashFiles('**/mpv-x86_64-windows-msvc.zip') }}
+        uses: actions/checkout@v4      
 
       - name: Download and extract latest MPV
         run: |
-          if (-Not (Test-Path -Path mpv-x86_64-windows-msvc.zip)) {
-            Invoke-WebRequest -Uri https://nightly.link/mpv-player/mpv/workflows/build/master/mpv-x86_64-windows-msvc.zip -OutFile mpv-x86_64-windows-msvc.zip
-          }
-          Expand-Archive -Path mpv-x86_64-windows-msvc.zip -DestinationPath .      
+          Invoke-WebRequest -Uri https://nightly.link/mpv-player/mpv/workflows/build/master/mpv-x86_64-windows-msvc.zip -OutFile mpv-x86_64-windows-msvc.zip          
+          Expand-Archive -Path mpv-x86_64-windows-msvc.zip -DestinationPath .
+          
+      - name: Download and extract latest FFMPEG
+        run: |
+          Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.7z -OutFile ffmpeg-release-full.7z
+          Expand-Archive -Path ffmpeg-release-full.7z -DestinationPath .
+
+      
