@@ -20,23 +20,21 @@ jobs:
     # The type of runner that the job will run on
     runs-on: windows-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    # Steps represent a sequence of tasks that will be executed as part of the job    
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-      # Download latest MPV
+      - name: Cache MPV download
+        uses: actions/cache@v3
+        with:
+          path: mpv-x86_64-windows-msvc.zip
+          key: ${{ runner.os }}-mpv-${{ hashFiles('**/mpv-x86_64-windows-msvc.zip') }}
+
       - name: Download and extract latest MPV
         run: |
-          wget https://nightly.link/mpv-player/mpv/workflows/build/master/mpv-x86_64-windows-msvc.zip
-          unzip mpv-x86_64-windows-msvc.zip
-          
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          if (-Not (Test-Path -Path mpv-x86_64-windows-msvc.zip)) {
+            Invoke-WebRequest -Uri https://nightly.link/mpv-player/mpv/workflows/build/master/mpv-x86_64-windows-msvc.zip -OutFile mpv-x86_64-windows-msvc.zip
+          }
+          Expand-Archive -Path mpv-x86_64-windows-msvc.zip -DestinationPath .      
