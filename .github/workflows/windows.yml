@@ -27,7 +27,7 @@ jobs:
         with:
           repository: christofsteel/syng      
 
-      - name: Download and extract latest MPV
+      - name: Download and extract latest MPV nightly
         run: |
           Invoke-WebRequest -Uri https://nightly.link/mpv-player/mpv/workflows/build/master/mpv-x86_64-windows-msvc.zip -OutFile mpv-x86_64-windows-msvc.zip          
           Expand-Archive -Path mpv-x86_64-windows-msvc.zip -DestinationPath .
@@ -35,32 +35,20 @@ jobs:
       - name: Install 7-Zip
         run: choco install -y 7zip
           
-      - name: Download and extract latest FFMPEG
+      - name: Download and extract FFMPEG 7.1
         run: |
           Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-7.1-full_build.7z -OutFile ffmpeg-release-full.7z
           7z x ffmpeg-release-full.7z
 
       - name: Populate workdir
         run: |
-          mkdir work
-          Get-ChildItem -Recurse -Path .
+          mkdir work          
           Copy-Item -Recurse -Verbose syng work/syng
-          Get-ChildItem -Recurse -Path .
           Copy-Item -Verbose requirements-client.txt work/requirements.txt
-          Get-ChildItem -Recurse -Path .
           Copy-Item -Verbose resources/icons/syng.ico work/
-          Get-ChildItem -Recurse -Path .
           Copy-Item -Verbose mpv.exe work/
-          Get-ChildItem -Recurse -Path .
           Copy-Item -Verbose vulkan-1.dll work/
-          Get-ChildItem -Recurse -Path .
           Copy-Item -Verbose ffmpeg-7.1-full_build/bin/ffmpeg.exe work/
-          Get-ChildItem -Recurse -Path .
-          
-
-      - name: List all files
-        run: Get-ChildItem -Recurse -Path work
-        shell: pwsh          
 
       - uses: actions/setup-python@v5
         name: Install Python
@@ -79,7 +67,9 @@ jobs:
         run: pip install pyinstaller
 
       - name: Bundle Syng
-        run: pyinstaller -n "syng-${{ env.VERSION }}" -F -w -i'.\syng.ico' --add-data='.\syng.ico;.' --add-binary '.\mpv.exe;.' --add-binary '.\vulkan-1.dll;.' --add-binary '.\ffmpeg.exe;.' syng/main.py                              
+        run: |
+          pip install -r requirements.txt
+          pyinstaller -n "syng-${{ env.VERSION }}" -F -w -i'.\syng.ico' --add-data='.\syng.ico;.' --add-binary '.\mpv.exe;.' --add-binary '.\vulkan-1.dll;.' --add-binary '.\ffmpeg.exe;.' syng/main.py                              
         working-directory: ./work
 
       - name: Upload artifact
