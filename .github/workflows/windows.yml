@@ -46,7 +46,7 @@ jobs:
 
       - name: Populate workdir
         run: |
-          cp syng work/syng
+          cp -rv syng work/syng
           cp requirements-client.txt work/requirements.txt
           cp resources/icons/syng.ico work/
           cp mpv.exe work/
