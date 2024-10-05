@@ -55,7 +55,7 @@ jobs:
         run: pip install pyinstaller
 
       - name: Bundle Syng
-        run: pyinstaller -F -w -i'syng\syng.ico' --add-data='syng\syng.ico;.' --add-binary '.\mpv.exe;.' --add-binary '.\vulkan-1.dll;.' --add-binary '.\ffmpeg.exe;.' syng/syng/main.py
+        run: pyinstaller -F -w -i'resources\icons\syng.ico' --add-data='resources\icons\syng.ico;.' --add-binary '.\mpv.exe;.' --add-binary '.\vulkan-1.dll;.' --add-binary '.\ffmpeg.exe;.' syng/main.py
         
       - name: List all files
         run: Get-ChildItem -Recurse -Path .
