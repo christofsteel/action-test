@@ -21,11 +21,7 @@ jobs:
     runs-on: windows-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job    
-    steps:
-      - name: create workdor
-        run: mkdir work
-        shell: bash
-        
+    steps:          
       - name: Check out repository
         uses: actions/checkout@v4
         with:
@@ -46,11 +42,20 @@ jobs:
 
       - name: Populate workdir
         run: |
+          mkdir work
+          Get-ChildItem -Recurse -Path .
+          Copy-Item -Recurse -Verbose syng work/syng
+          Get-ChildItem -Recurse -Path .
           Copy-Item -Verbose requirements-client.txt work/requirements.txt
+          Get-ChildItem -Recurse -Path .
           Copy-Item -Verbose resources/icons/syng.ico work/
+          Get-ChildItem -Recurse -Path .
           Copy-Item -Verbose mpv.exe work/
+          Get-ChildItem -Recurse -Path .
           Copy-Item -Verbose vulkan-1.dll work/
+          Get-ChildItem -Recurse -Path .
           Copy-Item -Verbose ffmpeg-7.1-full_build/bin/ffmpeg.exe work/
+          Get-ChildItem -Recurse -Path .
           
 
       - name: List all files
