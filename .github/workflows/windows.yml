@@ -39,4 +39,8 @@ jobs:
           Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-7.1-full_build.7z -OutFile ffmpeg-release-full.7z
           7z x ffmpeg-release-full.7z
 
+      - name: List extracted files
+        run: Get-ChildItem -Recurse -Path .
+        shell: pwsh
+
       
