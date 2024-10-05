@@ -22,11 +22,14 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job    
     steps:
-     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: create workdor
+        run: mkdir work
+        shell: bash
+        
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          repository: christofsteel/syng
+          repository: christofsteel/syng      
 
       - name: Download and extract latest MPV
         run: |
@@ -40,10 +43,19 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-7.1-full_build.7z -OutFile ffmpeg-release-full.7z
           7z x ffmpeg-release-full.7z
-          mv ffmpeg-7.1-full_build/bin/ffmpeg.exe .
+
+      - name: Populate workdir
+        run: |
+          cp syng work/syng
+          cp requirements-client.txt work/requirements.txt
+          cp resources/icons/syng.ico work/
+          cp mpv.exe work/
+          cp vulkan-1.dll work/
+          cp ffmpeg-7.1-full_build/bin/ffmpeg.exe work/
+          
 
       - name: List all files
-        run: Get-ChildItem -Recurse -Path .
+        run: Get-ChildItem -Recurse -Path work
         shell: pwsh          
 
       - uses: actions/setup-python@v5
@@ -53,24 +65,21 @@ jobs:
           
       - name: Install poetry
         run: pip install poetry
+        
+      - name: Extract version from Poetry
+        id: get_version
+        run: echo "VERSION=$(poetry version -s)" >> $GITHUB_ENV
+        shell: bash        
 
       - name: Install PyInstaller
         run: pip install pyinstaller
 
       - name: Bundle Syng
-        run: pyinstaller -F -w -i'resources\icons\syng.ico' --add-data='resources\icons\syng.ico;.' --add-binary '.\mpv.exe;.' --add-binary '.\vulkan-1.dll;.' --add-binary '.\ffmpeg.exe;.' syng/main.py      
-            
-      - name: Extract version from Poetry
-        id: get_version
-        run: echo "VERSION=$(poetry version -s)" >> $GITHUB_ENV
-        shell: bash
-
-      - name: Rename the generated file
-        run: mv dist/main.exe "dist/syng-${{ env.VERSION }}.exe"
-        shell: bash
+        run: pyinstaller -n "syng-${{ env.VERSION }}" -F -w -i'.\syng.ico' --add-data='.\syng.ico;.' --add-binary '.\mpv.exe;.' --add-binary '.\vulkan-1.dll;.' --add-binary '.\ffmpeg.exe;.' syng/main.py                              
+        working-directory: ./work
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Syng Version ${{ env.VERSION }}
-          path: dist/syng-${{ env.VERSION }}.exe          
+          path: work/dist/syng-${{ env.VERSION }}.exe          
