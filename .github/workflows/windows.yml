@@ -33,7 +33,7 @@ jobs:
           
       - name: Download and extract latest FFMPEG
         run: |
-          Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-release-full.7z -OutFile ffmpeg-release-full.7z
+          Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-7.1-full_build.7z -OutFile ffmpeg-release-full.7z
           Expand-Archive -Path ffmpeg-release-full.7z -DestinationPath .
 
       
