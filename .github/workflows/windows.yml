@@ -30,10 +30,13 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://nightly.link/mpv-player/mpv/workflows/build/master/mpv-x86_64-windows-msvc.zip -OutFile mpv-x86_64-windows-msvc.zip          
           Expand-Archive -Path mpv-x86_64-windows-msvc.zip -DestinationPath .
+
+      - name: Install 7-Zip
+        run: choco install -y 7zip
           
       - name: Download and extract latest FFMPEG
         run: |
           Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-7.1-full_build.7z -OutFile ffmpeg-release-full.7z
-          Expand-Archive -Path ffmpeg-release-full.7z -DestinationPath .
+          7z x ffmpeg-release-full.7z
 
       
